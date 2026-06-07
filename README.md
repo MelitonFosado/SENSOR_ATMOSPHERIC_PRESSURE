@@ -134,3 +134,19 @@ XLSB is just the extra fine detail at the end!
 
 3.11.3 Compensation formula
 The code below can be applied at the user's risk. Both pressure and temperature values are expected to be  received in 20 bit format, positive, stored in 32 bit signed integer.
+
+// Returns temperature in Deg Celcius, resolution is 0.01 DegC. Output values of "5123" DegC.
+// t_fine carries fine temperature as global value
+BMP280_S32_t t_fine;
+BMP280-S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T)
+{
+    BMP280_S32_t var1, var2, T;
+    var1  = ((((adc_T>>3) - ((BMP280_S32_t)dig_T1<<1))) * ((BMP280_S32_t)dig_T2)) >>11;
+    var2  = (((((adc_T>>4) - ((BMP280_S32_t)dig_T1)) * ((adc_T>>4) - ((BMP280_S32_t)dig_T1)))
+>> 12) *
+      ((BMP280_S32_t)dig_T3)) >>14;
+   t_fine = var1 + var2;
+   T = (t_fine * 5 + 128) >> 8;
+   return T;
+}
+
