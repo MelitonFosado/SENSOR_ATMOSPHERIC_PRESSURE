@@ -75,3 +75,6 @@ Table 17: Compensation parameter storage, naming and data type
 |    0x9C / 0x9D             | dig_P8           | signed short   |
 |    0x9E / 0x9F             | dig_P9           | signed short   |
 |    0xA0 / 0xA1             | reserved         | reserved       |
+
+3.11.3 Compensation formula
+The code below can be applied at the user's risk. Both pressure and temperature values are expected to be  received in 20 bit format, positive, stored in 32 bit signed integer.
