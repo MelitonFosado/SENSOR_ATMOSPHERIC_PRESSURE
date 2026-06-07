@@ -170,3 +170,33 @@ var1 = (((BMP280_S64_t)dig_P9) * (p>>13) * (p>>13)) >> 25;
 var2 = (((BMP280_S64_t)dig_P8) * p) >> 19;
 p = ((p + var1 + var2) >> 8) + (((BMP280_S64_t)dig_P7)<<4;
 return (BMP280_U32_t)p;
+
+
+## Calculation of pressure and temperature for BMP280
+
+### Sample trimming values
+
+| Register Address (LSB / MSB) | Name   | Value  | Type           |
+|------------------------------|--------|--------|----------------|
+| 0x88 / 0x89                  | dig_T1 | 27504  | unsigned short |
+| 0x8A / 0x8B                  | dig_T2 | 26435  | short          |
+| 0x8C / 0x8D                  | dig_T3 | -1000  | short          |
+| 0x8E / 0x8F                  | dig_P1 | 36477  | unsigned short |
+| 0x90 / 0x91                  | dig_P2 | -10685 | short          |
+| 0x92 / 0x93                  | dig_P3 | 3024   | short          |
+| 0x94 / 0x95                  | dig_P4 | 2855   | short          |
+| 0x96 / 0x97                  | dig_P5 | 140    | short          |
+| 0x98 / 0x99                  | dig_P6 | -7     | short          |
+| 0x9A / 0x9B                  | dig_P7 | 15500  | short          |
+| 0x9C / 0x9D                  | dig_P8 | -14600 | short          |
+| 0x9E / 0x9F                  | dig_P9 | 6000   | short          |
+| 0xA0 / 0xA1                  | —      | —      | reserved       |
+
+---
+
+### Sample measurement values
+
+| Register Address (MSB / LSB / XLSB) | Name       | Value  | Type            | Note |
+|-------------------------------------|------------|--------|-----------------|------|
+| 0xF7 / 0xF8 / 0xF9[7:4]            | UT [20bit] | 519888 | signed long (*) | (*) Value is always positive, even though the compensation functions expect a signed integer as input |
+| 0xFA / 0xFB / 0xFC[7:4]            | UP [20bit] | 415148 | signed long (*) | (*) Value is always positive, even though the compensation functions expect a signed integer as input |
