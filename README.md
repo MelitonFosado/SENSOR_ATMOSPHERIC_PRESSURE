@@ -58,3 +58,20 @@ As the memory is organized into 8-bit words, two words must always be combined i
 The 8-bit registers are named calib00..calib25 and are stored at memory addresses 0x88...0xA1. The corresponding compensation words are named dig_T# for temperature compensation related values and dig_P# for pressure compensation related values.
 The mapping is shown in Table 17.
 
+Table 17: Compensation parameter storage, naming and data type
+
+| Register Address LSB / MSB | Register Content | Data Type      |
+|----------------------------|------------------|----------------|
+|    0x88 / 0x89             | dig_T1           | unsigned short |
+|    0x8A / 0x8B             | dig_T2           | signed short   |
+|    0x8C / 0x8D             | dig_T3           | signed short   |
+|    0x8E / 0x8F             | dig_P1           | unsigned short |
+|    0x90 / 0x91             | dig_P2           | signed short   |
+|    0x92 / 0x93             | dig_P3           | signed short   |
+|    0x94 / 0x95             | dig_P4           | signed short   |
+|    0x96 / 0x97             | dig_P5           | signed short   |
+|    0x98 / 0x99             | dig_P6           | signed short   |
+|    0x9A / 0x9B             | dig_P7           | signed short   |
+|    0x9C / 0x9D             | dig_P8           | signed short   |
+|    0x9E / 0x9F             | dig_P9           | signed short   |
+|    0xA0 / 0xA1             | reserved         | reserved       |
