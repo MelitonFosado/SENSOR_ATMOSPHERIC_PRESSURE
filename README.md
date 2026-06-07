@@ -149,4 +149,5 @@ BMP280-S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T)
    T = (t_fine * 5 + 128) >> 8;
    return T;
 }
-
+// Return pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
+// Output value of "24674867" represents 24674867/256 = 96386.2 Pa=963.862 hPa
