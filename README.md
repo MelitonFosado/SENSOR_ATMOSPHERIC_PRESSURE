@@ -24,19 +24,19 @@ Burst Read means reading several memory registers continuously and all at once, 
 How does it normally work without burst read?
 Without burst read, you would do something like this:
 
-📨 "Hey BMP280, give me register 0xF7" → wait for response
-📨 "Hey BMP280, give me register 0xF8" → wait for response
-📨 "Hey BMP280, give me register 0xF9" → wait for response
-📨 "Hey BMP280, give me register 0xFA" → wait for response
-📨 "Hey BMP280, give me register 0xFB" → wait for response
-📨 "Hey BMP280, give me register 0xFC" → wait for response
+"Hey BMP280, give me register 0xF7" → wait for response
+"Hey BMP280, give me register 0xF8" → wait for response
+"Hey BMP280, give me register 0xF9" → wait for response
+"Hey BMP280, give me register 0xFA" → wait for response
+"Hey BMP280, give me register 0xFB" → wait for response
+"Hey BMP280, give me register 0xFC" → wait for response
 
 That's 6 separate transactions. Slow and risky. 
 
 How does it work WITH burst read?
 With burst read, you would do:
 
-📨 "Hey BMP280, start from 0xF7 and give me 6 bytes in a row" → you receive everything at once 
+"Hey BMP280, start from 0xF7 and give me 6 bytes in a row" → you receive everything at once 
 
 The sensor automatically sends you 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC without you having to request each one.
 
@@ -48,6 +48,6 @@ Imagine the sensor is in the middle of a new conversion while you are reading re
 Bytes 0xF7 and 0xF8 from the old measurement
 Bytes 0xF9 to 0xFC from the new measurement
 
-You would end up with mixed garbage data! 💀 With burst read, you capture everything in one instant, so all bytes belong to the same measurement.
-2. 🚦 Reduce interface traffic
+You would end up with mixed garbage data!  With burst read, you capture everything in one instant, so all bytes belong to the same measurement.
+2. Reduce interface traffic
 Fewer transactions = less overhead on I²C or SPI = more efficient and faster. 
