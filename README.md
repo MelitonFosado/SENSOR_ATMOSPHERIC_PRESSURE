@@ -200,3 +200,41 @@ return (BMP280_U32_t)p;
 |-------------------------------------|------------|--------|-----------------|------|
 | 0xF7 / 0xF8 / 0xF9[7:4]            | UT [20bit] | 519888 | signed long (*) | (*) Value is always positive, even though the compensation functions expect a signed integer as input |
 | 0xFA / 0xFB / 0xFC[7:4]            | UP [20bit] | 415148 | signed long (*) | (*) Value is always positive, even though the compensation functions expect a signed integer as input |
+
+
+
+## Compensation Calculation Example for BMP280
+
+### Temperature Compensation
+
+| Variable | Value | Formula |
+|---|---|---|
+| var1 | 128793.1787 | `var1 = (((double)adc_T)/16384.0 - ((double)dig_T1)/1024.0) * ((double)dig_T2);` |
+| var2 | -370.8917052 | `var2 = ((((double)adc_T)/131072.0 - ((double)dig_T1)/8192.0) * (((double)adc_T)/131072.0 - ((double)dig_T1)/8192.0)) * ((double)dig_T3);` |
+| t_fine | 128422 | `t_fine = (BMP280_S32_t)(var1 + var2);` |
+| **T** | **25.08** | **Temperature [°C]** → `T = (var1 + var2) / 5120.0;` |
+| integer result (**) | **2508** | **Temperature [1/100 °C]** |
+
+---
+
+### Pressure Compensation
+
+| Variable | Value | Formula |
+|---|---|---|
+| var1 | 211.1435029 | `var1 = ((double)t_fine/2.0) - 64000.0;` |
+| var2 | -9.523652701 | `var2 = var1 * var1 * ((double)dig_P6) / 32768.0;` |
+| var2 | 59110.65716 | `var2 = var2 + var1 * ((double)dig_P5) * 2.0;` |
+| var2 | 187120057.7 | `var2 = (var2/4.0) + (((double)dig_P4) * 65536.0);` |
+| var1 | -4.302618389 | `var1 = (((double)dig_P3) * var1 * var1 / 524288.0 + ((double)dig_P2) * var1) / 524288.0;` |
+| var1 | 36472.21037 | `var1 = (1.0 + var1 / 32768.0) * ((double)dig_P1);` |
+| p | 633428 | `p = 1048576.0 - (double)adc_P;` |
+| p | 100717.8456 | `p = (p - (var2 / 4096.0)) * 6250.0 / var1;` |
+| var1 | 28342.24444 | `var1 = ((double)dig_P9) * p * p / 2147483648.0;` |
+| var2 | -44875.50492 | `var2 = p * ((double)dig_P8) / 32768.0;` |
+| **p** | **100653.27** | **Pressure [Pa]** → `p = p + (var1 + var2 + ((double)dig_P7)) / 16.0;` |
+| int32 result (**) | **100653** | **Pressure [Pa]** |
+| int64 result (**) | **25767236** | **Pressure [1/256 Pa]** |
+
+---
+
+> (**) The actual result of the integer calculation may deviate slightly from the values shown here due to integer calculation rounding errors.
