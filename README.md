@@ -51,3 +51,10 @@ Bytes 0xF9 to 0xFC from the new measurement
 You would end up with mixed garbage data!  With burst read, you capture everything in one instant, so all bytes belong to the same measurement.
 2. Reduce interface traffic
 Fewer transactions = less overhead on I²C or SPI = more efficient and faster. 
+
+3.11.2 Trimming parameter readout
+The trimming parameters are programmed into the devices non- volatile memory (NVM) during production and cannot be altered by the customer. Each compensation word is a 16-bit signed or unsigned integer value stored in two's complement.
+As the memory is organized into 8-bit words, two words must always be combined in order to represent the compensation word.
+The 8-bit registers are named calib00..calib25 and are stored at memory addresses 0x88...0xA1. The corresponding compensation words are named dig_T# for temperature compensation related values and dig_P# for pressure compensation related values.
+The mapping is shown in Table 17.
+
