@@ -76,5 +76,61 @@ Table 17: Compensation parameter storage, naming and data type
 |    0x9E / 0x9F             | dig_P9           | signed short   |
 |    0xA0 / 0xA1             | reserved         | reserved       |
 
+## MSB, LSB and XLSB explained
+
+**MSB** = Most Significant Byte → the **biggest/heaviest** bits, the ones on the left
+
+**LSB** = Least Significant Byte → the **smallest/lightest** bits, the ones to the right of MSB
+
+**XLSB** = **eXtra** Least Significant Byte → even **more** bits to the right, the tiniest ones of all.
+
+---
+
+## Visual example
+
+The BMP280 gives you pressure in **20-bit format**, but registers are only 8 bits each, so it splits the data across 3 registers like this:
+
+| Register | Bits | Size |
+|---|---|---|
+| press_msb | bits 19-12 | 8 bits |
+| press_lsb | bits 11-4 | 8 bits |
+| press_xlsb | bits 3-0 | 4 bits |
+| **TOTAL** | **bits 19-0** | **20 bits** |
+
+So to reconstruct the full 20-bit value in code you do:
+
+```c
+long raw_pressure = ((long)press_msb << 12) |
+                    ((long)press_lsb << 4)  |
+                    ((long)press_xlsb >> 4);
+```
+
+---
+
+## Why does XLSB exist?
+
+Because the BMP280 gives you **up to 20 bits of resolution** in Ultra High Resolution mode.
+20 bits don't fit into just 2 registers of 8 bits each (that would only be 16 bits).
+So they need a **third register** to store those last 4 extra bits of precision.
+
+Those 4 extra bits from XLSB are what push the pressure resolution down to **0.16 Pa**,
+which is insanely precise. Without them you'd only get 16 bits = 2.62 Pa resolution.
+
+---
+
+## Simple analogy
+
+Think of it like measuring something very precisely:
+
+| Register | Like... | Example |
+|---|---|---|
+| MSB | The meters | **5** m |
+| LSB | The centimeters | 5.**23** m |
+| XLSB | The micrometers | 5.2300**47** m |
+
+Each extra register gives you more decimal places of precision.
+XLSB is just the extra fine detail at the end!
+
+
 3.11.3 Compensation formula
 The code below can be applied at the user's risk. Both pressure and temperature values are expected to be  received in 20 bit format, positive, stored in 32 bit signed integer.
